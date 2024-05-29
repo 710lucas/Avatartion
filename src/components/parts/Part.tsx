@@ -5,9 +5,10 @@ import * as parts from ".";
 
 type Props = {
   src: string;
+  color: string;
 } & React.HTMLAttributes<SVGAElement>;
 
-export const Part: FC<Props> = ({ src, ...rest }) => {
+export const Part: FC<Props> = ({ src, color, ...rest }) => {
   const splitSrc = src.split("/");
   src = splitSrc[1];
 
@@ -16,6 +17,6 @@ export const Part: FC<Props> = ({ src, ...rest }) => {
     console.error(`No part named "${src}" was found.`);
     return null;
   }
-  
-  return <PartComponent {...rest} />;
+
+  return <PartComponent color={color} {...rest} />;
 }

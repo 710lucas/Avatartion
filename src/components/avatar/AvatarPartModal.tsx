@@ -14,6 +14,7 @@ type Props = {
   activePart?: string;
   onClose: () => void;
   onPartSelected: (part: string, src: string) => void;
+  skin_tone: string
 };
 
 export const AvatarPartModal = ({
@@ -25,6 +26,7 @@ export const AvatarPartModal = ({
   activePart,
   onPartSelected,
   onClose,
+  skin_tone
 }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -108,7 +110,7 @@ export const AvatarPartModal = ({
                         }}
                       >
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <AvatarPart path={path} />
+                          <AvatarPart path={path} skin_tone={skin_tone}/>
                         </div>
                       </AvatarButtonPickerContainer>
                     );

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import { backgrounds } from "../constants/backgrounds";
+import { skin_tones } from "../constants/skin-tones";
 import { useSounds } from "./useSounds";
 import toast from "react-hot-toast";
 import { useConfetti } from "./useConfetti";
@@ -20,6 +21,7 @@ type Avatar = {
   outfit: AvatarPart;
   accessories: AvatarPart;
   facialHair: AvatarPart;
+  skin_tone: string;
 };
 
 type AvatarModal = {
@@ -50,6 +52,7 @@ type UseAvatarValues = {
   avatarCanvasRef: React.MutableRefObject<HTMLDivElement | null>;
   isAvatarModalPickerOpen: boolean;
   isBackgroundModalOpen: boolean;
+  isSkinToneModalOpen: boolean;
   isDownloadOptionModalOpen: boolean;
   isShared: boolean;
   showConfetti: boolean;
@@ -57,10 +60,12 @@ type UseAvatarValues = {
   setAvatar: React.Dispatch<React.SetStateAction<Avatar>>;
   setIsAvatarModalPickerOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsBackgroundModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsSkinToneModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDownloadOptionModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   openAvatarModalPicker: (avatarModal: AvatarModal) => void;
   closeAvatarModalPicker: (part: string, src: string) => void;
   openAvatarBackgroundModal: () => void;
+  openAvatarSkinToneModal: () => void;
   openAvatarDownloadOptionModal: () => void;
   handleDownloadAvatarPNG: () => void;
   handleDownloadAvatarSVG: () => void;
@@ -91,6 +96,7 @@ const getRandomAvatar = (overrides?: Partial<Avatar>) => {
     outfit: { src: `${randomPart("outfits/Outfit", 25)}` },
     accessories: { src: `${randomPart("accessories/Accessory", 10)}` },
     facialHair: { src: `${randomPart("facial-hair/FacialHair", 8)}` },
+    skin_tone : skin_tones[Math.floor(Math.random() * skin_tones.length)],
     ...overrides,
   };
 };
@@ -139,6 +145,7 @@ const deserializeAvatar = (serializedAvatar: string): Avatar | null => {
 
     const parts = [...buffer].map((b) => b.toString().padStart(2, "0"));
     const background = backgrounds[buffer[8]];
+    const skin_tone = skin_tones[buffer[8]]
 
     return {
       bg: background,
@@ -150,6 +157,7 @@ const deserializeAvatar = (serializedAvatar: string): Avatar | null => {
       outfit: { src: `outfits/Outfit${parts[5]}` },
       accessories: { src: `accessories/Accessory${parts[6]}` },
       facialHair: { src: `facial-hair/FacialHair${parts[7]}` },
+      skin_tone : skin_tone
     };
   } catch (error) {
     return null;
@@ -181,6 +189,7 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
   });
   const [isAvatarModalPickerOpen, setIsAvatarModalPickerOpen] = useState(false);
   const [isBackgroundModalOpen, setIsBackgroundModalOpen] = useState(false);
+  const [isSkinToneModalOpen, setIsSkinToneModalOpen] = useState(false);
   const [isDownloadOptionModalOpen, setIsDownloadOptionModalOpen] =
     useState(false);
   const [avatarModal, setAvatarModal] = useState<AvatarModal>({
@@ -211,6 +220,11 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     playClickSound();
     setIsBackgroundModalOpen(true);
   };
+
+  const openAvatarSkinToneModal = () => {
+    playClickSound();
+    setIsSkinToneModalOpen(true);
+  }
 
   const openAvatarDownloadOptionModal = () => {
     playClickSound();
@@ -411,9 +425,19 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
       width: 60,
       isModal: true,
     },
+    {
+      text: "Skin tones",
+      path: avatar?.skin_tone || "bg-transparent",
+      title: "Skin tones",
+      part: "skin_tone",
+      src: "bg-transparent",
+      qty: 0,
+      width: 60,
+      isModal: true,
+    },
   ];
 
-  const excludedAvatarPartsPickers = ["facialHair", "accessories", "bg"];
+  const excludedAvatarPartsPickers = ["facialHair", "accessories", "bg", "skin_tone"];
   const filteredAvatarPartsPickers = avatarPartsPickers.filter(
     (picker) => !excludedAvatarPartsPickers.includes(picker.part)
   );
@@ -427,6 +451,7 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     restAvatarPartsPickers,
     isAvatarModalPickerOpen,
     isBackgroundModalOpen,
+    isSkinToneModalOpen,
     isDownloadOptionModalOpen,
     avatarModal,
     activePart,
@@ -436,10 +461,12 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     setAvatar,
     setIsAvatarModalPickerOpen,
     setIsBackgroundModalOpen,
+    setIsSkinToneModalOpen,
     setIsDownloadOptionModalOpen,
     openAvatarModalPicker,
     closeAvatarModalPicker,
     openAvatarBackgroundModal,
+    openAvatarSkinToneModal,
     handleDownloadAvatarPNG,
     handleDownloadAvatarSVG,
     handleRandomizeAvatar,

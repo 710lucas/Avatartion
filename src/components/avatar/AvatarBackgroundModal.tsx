@@ -89,7 +89,7 @@ export const AvatarBackgroundModal = ({
                               className="h-24 w-24"
                             />
                           ) : (
-                            <div className={`h-24 w-24 ${background}`} />
+                            <div className={`h-24 w-24 ${background}`} style={{background: background}} />
                           )}
                         </div>
                       </AvatarButtonPickerContainer>

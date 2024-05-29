@@ -17,6 +17,7 @@ import { Selector } from "./components/parts/Selector";
 import { FAQs } from "./components/FAQs";
 import { useEffect } from "react";
 import { Confetti } from "@neoconfetti/react";
+import { skin_tones } from "./constants/skin-tones";
 
 const Title = () => <h1 className="font-bold text-3xl">Avatartion</h1>;
 
@@ -28,6 +29,7 @@ function App() {
     restAvatarPartsPickers,
     isAvatarModalPickerOpen,
     isBackgroundModalOpen,
+    isSkinToneModalOpen,
     isShared,
     avatarModal,
     avatarCanvasRef,
@@ -37,10 +39,12 @@ function App() {
     setAvatar,
     setIsAvatarModalPickerOpen,
     setIsBackgroundModalOpen,
+    setIsSkinToneModalOpen,
     setIsDownloadOptionModalOpen,
     openAvatarModalPicker,
     closeAvatarModalPicker,
     openAvatarBackgroundModal,
+    openAvatarSkinToneModal,
     openAvatarDownloadOptionModal,
     handleDownloadAvatarPNG,
     handleDownloadAvatarSVG,
@@ -90,6 +94,7 @@ function App() {
               <div className="absolute -right-6">
                 <div className="flex space-x-6">
                   <div className="flex flex-col space-y-4">
+                    {/* Partes que podemos editar  */}
                     {avatarPartsPickers.map((picker) => (
                       <AvatarTooltip
                         key={picker.path}
@@ -120,23 +125,31 @@ function App() {
                         width={picker.width}
                       >
                         <div className="flex items-center">
-                          {picker.part !== "bg" ? (
+                          {(picker.part !== "bg" && picker.part !== "skin_tone") ? (
                             <AvatarPartPicker
                               path={picker.path}
-                              onClick={() => openAvatarModalPicker(picker)}
+                              onClick={() => {openAvatarModalPicker(picker);}}
                             />
-                          ) : (
+                          ) : picker.part == "bg" ? (
                             <AvatarBackgroundPicker
                               color={avatar.bg}
                               onClick={() => openAvatarBackgroundModal()}
                             />
-                          )}
+                          ) :
+                          (
+                            <AvatarBackgroundPicker
+                              color={avatar.skin_tone}
+                              onClick={() => openAvatarSkinToneModal()}
+                            />
+                          )
+                          }
                           {picker.isModal && (
                             <Selector
                               onSelectorClick={() =>
-                                picker.part !== "bg"
+                              (picker.part !== "bg" && picker.part !== "skin_tone")
                                   ? openAvatarModalPicker(picker)
-                                  : openAvatarBackgroundModal()
+                                  : picker.part == 'bg' ? openAvatarBackgroundModal()
+                                  : openAvatarSkinToneModal()
                               }
                             />
                           )}
@@ -188,6 +201,7 @@ function App() {
             <div className="flex items-center justify-center h-[44vh] md:h-[47vh]">
               <AvatarCanvas {...avatar} ref={avatarCanvasRef} />
             </div>
+            {/* Container de botões */}
             <div className="flex items-center justify-center">
             {showConfetti && <Confetti {...confettiOptions} />}
               <div className="flex flex-col items-center justify-center px-4 pt-6 space-y-2 overflow-x-auto">
@@ -276,6 +290,7 @@ function App() {
         isOpen={isAvatarModalPickerOpen}
         onPartSelected={(part, src) => closeAvatarModalPicker(part, src)}
         onClose={() => setIsAvatarModalPickerOpen(false)}
+        skin_tone={avatar.skin_tone}
       />
       <AvatarBackgroundModal
         isOpen={isBackgroundModalOpen}
@@ -287,7 +302,19 @@ function App() {
             bg,
           }))
         }
-        onClose={() => setIsBackgroundModalOpen(false)}
+        onClose={() => {setIsBackgroundModalOpen(false)}}
+      />
+      <AvatarBackgroundModal
+        isOpen={isSkinToneModalOpen}
+        backgrounds={skin_tones}
+        activeBackground={avatar.skin_tone}
+        onBackgroundSelected={(skin_tone) =>
+          setAvatar((prev) => ({
+            ...prev,
+            skin_tone,
+          }))
+        }
+        onClose={() => {setIsSkinToneModalOpen(false)}}
       />
       <AvatarDownloadOptionModal
         isOpen={isDownloadOptionModalOpen}

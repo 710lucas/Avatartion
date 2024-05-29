@@ -16,6 +16,7 @@ type AvatarCanvasProps = {
   body: AvatarPart;
   accessories: AvatarPart;
   facialHair: AvatarPart;
+  skin_tone: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export const AvatarCanvas = React.forwardRef<HTMLDivElement, AvatarCanvasProps>(
@@ -30,11 +31,12 @@ export const AvatarCanvas = React.forwardRef<HTMLDivElement, AvatarCanvasProps>(
       body,
       accessories,
       facialHair,
+      skin_tone,
       ...rest
     },
     ref
   ) => {
-    const renderAvatarPart = (part: AvatarPart, type: string) => {
+    const renderAvatarPart = (part: AvatarPart, type: string, color : string) => {
       return (
         <Suspense>
           <Part
@@ -44,6 +46,7 @@ export const AvatarCanvas = React.forwardRef<HTMLDivElement, AvatarCanvasProps>(
               position: 'absolute',
               pointerEvents: 'none'
             }}
+            color={color}
           />
         </Suspense>
       );
@@ -56,14 +59,14 @@ export const AvatarCanvas = React.forwardRef<HTMLDivElement, AvatarCanvasProps>(
         className={`absolute w-80 h-[294px] overflow-hidden ${bg} rounded-2xl`}
         {...rest}
       >
-        {renderAvatarPart(body, "body")}
-        {renderAvatarPart(hair, "hair")}
-        {renderAvatarPart(eyes, "eyes")}
-        {renderAvatarPart(mouth, "mouth")}
-        {renderAvatarPart(head, "head")}
-        {renderAvatarPart(outfit, "outfit")}
-        {renderAvatarPart(accessories, "accessories")}
-        {renderAvatarPart(facialHair, "facial-hair")}
+        {renderAvatarPart(body, "body", skin_tone)}
+        {renderAvatarPart(hair, "hair", skin_tone)}
+        {renderAvatarPart(eyes, "eyes", skin_tone)}
+        {renderAvatarPart(mouth, "mouth", skin_tone)}
+        {renderAvatarPart(head, "head", skin_tone)}
+        {renderAvatarPart(outfit, "outfit", skin_tone)}
+        {renderAvatarPart(accessories, "accessories", skin_tone)}
+        {renderAvatarPart(facialHair, "facial-hair", skin_tone)}
       </div>
     );
   }

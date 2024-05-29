@@ -11,7 +11,7 @@ export const AvatarBackgroundPicker = ({ color, ...rest }: Props) => {
         {color === 'bg-transparent' ? (
           <img src="/transparent-bg.jpg" alt="transparent-bg" className='w-12 h-12' />
         ) : (
-          <div className={`w-12 h-12 ${color}`} />
+          <div className={`w-12 h-12 ${color}`} style={{background: color}} />
         )}
       </div>
     </AvatarButtonPickerContainer>
