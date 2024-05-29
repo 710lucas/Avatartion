@@ -242,7 +242,19 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
           }
         : {};
 
-    const canvas = await html2canvas(avatarCanvasRef.current, options),
+    const desiredResolution = { width: 1200, height: 1200 };
+
+    // Escala para aplicar
+    const scale = desiredResolution.width / avatarCanvasRef.current.offsetWidth;
+
+    // Ajustar a largura e a altura do canvas
+    avatarCanvasRef.current.style.transform = `scale(${scale})`;
+    avatarCanvasRef.current.style.transformOrigin = 'top left';
+
+    avatarCanvasRef.current.style.width = desiredResolution.width+"px";
+    avatarCanvasRef.current.style.height = desiredResolution.height+"px";
+
+    const canvas = await html2canvas(avatarCanvasRef.current, {...options, width: desiredResolution.width, height: desiredResolution.height}),
       data = canvas.toDataURL("image/jpg"),
       link = document.createElement("a");
 
@@ -254,6 +266,13 @@ export const useAvatar = ({ soundEnabled }: UseAvatarType): UseAvatarValues => {
     document.body.removeChild(link);
     playClickSound();
     confettiToggle();
+
+        // Restaurar a largura e a altura originais do canvas após a renderização
+        avatarCanvasRef.current.style.width = '';
+        avatarCanvasRef.current.style.height = '';
+          // Restaurar a escala original após a renderização
+    avatarCanvasRef.current.style.transform = '';
+    avatarCanvasRef.current.style.transformOrigin = '';
   };
 
   const handleDownloadAvatarSVG = async () => {
