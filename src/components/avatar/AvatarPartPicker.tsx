@@ -10,7 +10,7 @@ export const AvatarPartPicker = ({ path, withBorder = true, ...rest }: Props) =>
   return (
     <AvatarButtonPickerContainer withBorder={withBorder} {...rest}>
       <div className="absolute inset-0 flex items-center justify-center">
-        <AvatarPart path={path} />
+        <AvatarPart path={path} skin_tone="" />
       </div>
     </AvatarButtonPickerContainer>
   );
