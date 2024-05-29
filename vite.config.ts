@@ -6,5 +6,6 @@ export default defineConfig(() => {
   // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
   return {
     plugins: [react()],
+    base: "/Avatartion-skin-tones/"
   };
 });
